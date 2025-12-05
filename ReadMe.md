@@ -10,6 +10,10 @@ camera（蓝色）
 imu（绿色）
 # 安装方式
 ```
+roscore
+```
+新开一个目录
+```
 mkdir catkin_ws  
 cd catkin_ws
 git clone https://github.com/iamgod-king/qtotor.git
