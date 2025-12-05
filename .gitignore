@@ -1,1 +1,1 @@
-echo "CMakeLists.txt" > .gitignore
+CMakeLists.txt
