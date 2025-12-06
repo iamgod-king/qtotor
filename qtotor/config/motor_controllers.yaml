@@ -1,0 +1,30 @@
+qtotor:
+  # 关节状态控制器（必须）
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+  
+  # 四个电机的速度控制器
+  lf_joint_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: lf_joint
+    pid: {p: 100.0, i: 0.1, d: 10.0}
+    publish_rate: 50
+  
+  lb_joint_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: lb_joint
+    pid: {p: 100.0, i: 0.1, d: 10.0}
+    publish_rate: 50
+  
+  rb_joint_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: rb_joint
+    pid: {p: 100.0, i: 0.1, d: 10.0}
+    publish_rate: 50
+  
+  rf_joint_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: rf_joint
+    pid: {p: 100.0, i: 0.1, d: 10.0}
+    publish_rate: 50

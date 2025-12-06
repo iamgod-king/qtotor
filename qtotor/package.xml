@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>qtotor</name>
+  <version>0.0.0</version>
+  <description>QTotor quadrotor simulation package</description>
+
+  <maintainer email="user@todo.todo">user</maintainer>
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- 编译时依赖 -->
+  <depend>roscpp</depend>
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>tf</depend>
+  <depend>urdf</depend>
+  <depend>xacro</depend>
+  
+  <!-- 控制相关 -->
+  <depend>controller_manager</depend>
+  <depend>joint_state_controller</depend>
+  
+  <!-- 机器人状态 -->
+  <depend>robot_state_publisher</depend>
+  <depend>joint_state_publisher</depend>
+  
+  <!-- RViz -->
+  <depend>rviz</depend>
+
+  <export>
+    <gazebo_ros plugin_path="${prefix}/lib"/>
+    <rosdoc config="$(find qtotor)/rosdoc.yaml"/>
+  </export>
+</package>

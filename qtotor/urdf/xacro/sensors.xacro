@@ -1,0 +1,179 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:property name="M_PI" value="3.14159"/> 
+  <xacro:property name="laser_min_range" value="0.1"/>
+  <xacro:property name="laser_max_range" value="200.0"/>
+  <xacro:property name="samples" value="24000"/>
+  <xacro:property name="downsample" value="1"/>
+  <!-- 零惯性宏 -->
+  <xacro:macro name="null_inertial">
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.01" ixy="0" ixz="0"
+              iyy="0.01" iyz="0"
+              izz="0.01"/>
+    </inertial>
+  </xacro:macro>
+
+  <!-- 相机传感器宏 -->
+  <xacro:macro name="camera_sensor" params="parent xyz rpy">
+    <link name="camera_link">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.01"/>
+        <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.05 0.03 0.02"/>
+        </geometry>
+        <material name="blue"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.05 0.03 0.02"/>
+        </geometry>
+      </collision>
+      <sensor name="camera_sensor" type="camera">
+        <camera>
+          <horizontal_fov>1.047</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.05</near>
+            <far>100</far>
+          </clip>
+        </camera>
+        <always_on>true</always_on>
+        <update_rate>30</update_rate>
+      </sensor>
+    </link>
+    
+    <joint name="camera_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="camera_link"/>
+      <origin xyz="${xyz}" rpy="${rpy}"/>
+    </joint>
+  </xacro:macro>
+
+  <!-- IMU传感器宏 -->
+  <xacro:macro name="imu_sensor" params="parent xyz rpy">
+    <link name="imu_link">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.005"/>
+        <inertia ixx="1e-7" ixy="0" ixz="0" iyy="1e-7" iyz="0" izz="1e-7"/>
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.015 0.015 0.01"/>
+        </geometry>
+        <material name="green"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.015 0.015 0.01"/>
+        </geometry>
+      </collision>
+      <sensor name="imu_sensor" type="imu">
+        <imu>
+          <noise>
+            <type>gaussian</type>
+            <rate>
+              <mean>0.0</mean>
+              <stddev>0.0002</stddev>
+              <bias_mean>0.0000075</bias_mean>
+              <bias_stddev>0.0000008</bias_stddev>
+            </rate>
+            <accel>
+              <mean>0.0</mean>
+              <stddev>0.017</stddev>
+              <bias_mean>0.1</bias_mean>
+              <bias_stddev>0.001</bias_stddev>
+            </accel>
+          </noise>
+        </imu>
+        <always_on>true</always_on>
+        <update_rate>200</update_rate>
+      </sensor>
+    </link>
+    
+    <joint name="imu_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="imu_link"/>
+      <origin xyz="${xyz}" rpy="${rpy}"/>
+    </joint>
+  </xacro:macro>
+
+  <!-- 2d激光雷达宏 -->
+  <xacro:macro name="laser_2d" params="parent xyz rpy">
+    <link name="laser_link">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.05"/>
+        <inertia ixx="1e-5" ixy="0" ixz="0" iyy="1e-5" iyz="0" izz="1e-5"/>
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.04 0.04 0.03"/>
+        </geometry>
+        <material name="black">
+          <color rgba="1 1 1 0.8"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.04 0.04 0.03"/>
+        </geometry>
+      </collision>
+    </link>
+    
+    <joint name="laser_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="laser_link"/>
+      <origin xyz="${xyz}" rpy="${rpy}"/>
+    </joint>
+  </xacro:macro>
+
+  <!-- Livox Mid360 雷达传感器宏 -->
+  <xacro:macro name="Livox_Mid360" params="parent xyz rpy ">
+    <!-- Livox雷达本体链接 -->
+    <link name="livox_mid360_link">
+      <xacro:null_inertial/>
+      <visual> 
+        <origin xyz="0.00 0 0.0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://qtotor/meshes/livox_mid-360-90x.dae"/>
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://qtotor/meshes/livox_mid-360-90x.dae"/>
+        </geometry>
+      </collision>
+    </link>
+    
+
+
+    <!-- 连接到父链接 -->
+    <joint name="livox_mid360_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="livox_mid360_link"/>
+      <origin xyz="${xyz}" rpy="${rpy}"/>
+    </joint>
+    
+
+  </xacro:macro>
+
+</robot>

@@ -1,0 +1,193 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:macro name="gazebo_plugins">
+        <!-- 基础Gazebo参数 -->
+        <gazebo reference="base_link">
+            <material>Gazebo/Grey</material>
+            <mu1>0.2</mu1>
+            <mu2>0.2</mu2>
+            <kp>1000000.0</kp>
+            <kd>1.0</kd>
+            <minDepth>0.001</minDepth>
+            <maxVel>1.0</maxVel>
+        </gazebo>
+        
+        <!-- 1. 真实位置发布插件 -->
+        <gazebo>
+            <plugin name="pose_publisher" filename="libgazebo_ros_p3d.so">
+                <robotNamespace>/qtotor</robotNamespace>
+                <bodyName>base_link</bodyName>
+                <topicName>ground_truth/pose</topicName>
+                <frameName>world</frameName>
+                <updateRate>100.0</updateRate>
+                <xyzOffset>0 0 0</xyzOffset>
+                <rpyOffset>0 0 0</rpyOffset>
+            </plugin>
+        </gazebo>
+        <!-- 2. 位置控制插件 -->
+        <gazebo>   
+            <plugin name="pose_controller" filename="libgazebo_ros_planar_move.so">
+                <robotNamespace>/qtotor</robotNamespace>
+                <commandTopic>command/velocity</commandTopic>
+                <odometryTopic>current/pose</odometryTopic>
+                <odometryFrame>world</odometryFrame>
+                <robotBaseFrame>base_link</robotBaseFrame>
+                <odometryRate>100.0</odometryRate>
+                <cmdTimeout>1.0</cmdTimeout>
+                <holonomic>true</holonomic>
+                <maxLinearVelocity>10.0</maxLinearVelocity>
+            </plugin>
+        </gazebo>
+        <!-- 3. 摄像头ROS驱动插件 -->
+        <gazebo reference="camera_link">
+            <sensor type="camera" name="camera_sensor">
+                <update_rate>30.0</update_rate>
+                <camera name="camera">
+                    <horizontal_fov>1.3962634</horizontal_fov>
+                    <image>
+                        <width>640</width>
+                        <height>480</height>
+                        <format>R8G8B8</format>
+                    </image>
+                    <clip>
+                        <near>0.05</near>
+                        <far>300</far>
+                    </clip>
+                </camera>
+                <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+                    <alwaysOn>true</alwaysOn>
+                    <updateRate>30.0</updateRate>
+                    <cameraName>camera</cameraName>
+                    <imageTopicName>image_raw</imageTopicName>
+                    <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+                    <frameName>camera_link</frameName>
+                    <hackBaseline>0.07</hackBaseline>
+                </plugin>
+            </sensor>
+        </gazebo>
+        
+        <!-- 4. IMU ROS驱动插件 -->
+        <gazebo reference="imu_link">
+            <sensor type="imu" name="imu_sensor">
+                <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+                    <topicName>imu/data</topicName>
+                    <bodyName>imu_link</bodyName>
+                    <updateRateHZ>200.0</updateRateHZ>
+                    <gaussianNoise>0.0</gaussianNoise>
+                    <xyzOffset>0 0 0</xyzOffset>
+                    <rpyOffset>0 0 0</rpyOffset>
+                    <frameName>imu_link</frameName>
+                    <initialOrientationAsReference>false</initialOrientationAsReference>
+                </plugin>
+                <always_on>true</always_on>
+                <update_rate>200</update_rate>
+                <visualize>true</visualize>
+                <topic>__default_topic__</topic>
+            </sensor>
+        </gazebo>
+         
+        <!-- 5. 2D雷达 ROS驱动插件 -->
+        <gazebo reference="laser_link">
+            <sensor type="ray" name="laser_sensor">
+                <pose>0 0 0 0 0 0</pose>
+                <visualize>true</visualize>
+                <update_rate>10</update_rate>
+                <ray>
+                <scan>
+                    <horizontal>
+                    <samples>360</samples>
+                    <resolution>1</resolution>
+                    <min_angle>-3.14159</min_angle>
+                    <max_angle>3.14159</max_angle>
+                    </horizontal>
+                </scan>
+                <range>
+                    <min>0.1</min>
+                    <max>30.0</max>
+                    <resolution>0.01</resolution>
+                </range>
+                <noise>
+                    <type>gaussian</type>
+                    <mean>0.0</mean>
+                    <stddev>0.01</stddev>
+                </noise>
+                </ray>
+                <plugin name="gazebo_ros_laser_controller" filename="libgazebo_ros_laser.so">
+                <!-- ROS驱动参数 -->
+                <robotNamespace>/qtotor</robotNamespace>
+                <topicName>/scan</topicName>
+                <frameName>laser_link</frameName>
+                <radiation>laser</radiation>
+                <fudgeFactor>1.0</fudgeFactor>
+                <hokuyoMinIntensity>100</hokuyoMinIntensity>
+                </plugin>
+            </sensor>
+        </gazebo>
+        
+        <!-- 6. Gazebo传感器插件宏 -->
+        <gazebo reference="livox_mid360_link">
+            <sensor type="ray" name="livox_mid360_sensor">
+                <pose>0 0 0 0 0 0</pose>
+                <visualize>true</visualize>
+                <update_rate>10</update_rate>
+                <plugin name="livox_laser_plugin" filename="liblivox_laser_simulation.so">
+                <!-- Ray配置 -->
+                <plugin name="livox_laser_plugin" filename="liblivox_laser_simulation.so" />
+                <ray>
+
+                <scan>
+                    <horizontal>
+                    <samples>100</samples>
+                    <resolution>1</resolution>
+                    <min_angle>0</min_angle>
+                    <max_angle>${2*M_PI}</max_angle>
+                    </horizontal>
+                    <vertical>
+                    <samples>360</samples>
+                    <resolution>1</resolution>
+                    <min_angle>${-7.22/180*M_PI}</min_angle>
+                    <max_angle>${55.22/180*M_PI}</max_angle>
+                    </vertical>
+                </scan>
+                <range>
+                    <min>0.1</min>
+                    <max>200.0</max>
+                    <resolution>0.002</resolution>
+                </range>
+                <noise>
+                    <type>gaussian</type>
+                    <mean>0.0</mean>
+                    <stddev>0.01</stddev>
+                </noise>
+                </ray>
+                
+                <!-- Livox插件 -->
+                
+                <visualize>true</visualize>
+                <samples>24000</samples>
+                <downsample>1</downsample>
+                <csv_file_name>package://qtotor/urdf/xacro/mid360.csv</csv_file_name>
+                <ros_topic>/scan_livox</ros_topic>
+                <frameName>livox_mid360_link</frameName>
+                </plugin>
+            </sensor>
+        </gazebo>
+        <!-- 7. ROS接口插件（可选） -->
+        <gazebo>
+            <plugin name="ros_interface" filename="libgazebo_ros_interface.so">
+                <robotNamespace>/qtotor</robotNamespace>
+                <controlPeriod>0.01</controlPeriod>
+                <robotSimType>quadrotor</robotSimType>
+            </plugin>
+            <!-- Gazebo发布关节状态到ROS -->
+            <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+                <robotNamespace>/qtotor</robotNamespace>
+                <controlPeriod>0.001</controlPeriod>
+                <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+            </plugin>
+        </gazebo>
+
+    </xacro:macro>
+
+</robot>

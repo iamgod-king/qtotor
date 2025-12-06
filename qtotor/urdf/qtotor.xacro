@@ -1,0 +1,261 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="qtotor">
+
+    <xacro:property name="M_PI" value="3.1415926535897931" />
+  
+    <material name="blue">
+        <color rgba="0 0 1 0.8" />
+    </material>
+    <material name="red">
+        <color rgba="1 0 0 0.8" />
+    </material>
+    <material name="green">
+        <color rgba="0 1 0 1" />
+    </material>
+    <material name="black">
+        <color rgba="0 0 0 1" />
+    </material>
+
+    <!-- 基础机身 -->
+    <link name="base_link">
+        <inertial>
+            <origin xyz="0.000357157116482143 2.8373792840343E-05 0.0202502241096914" rpy="0 0 0" />
+            <mass value="0.140328319001093" />
+            <inertia ixx="3.13550578427397E-05" ixy="3.58527350085064E-21" ixz="-5.92980181656483E-10" iyy="4.43322794880048E-05" iyz="1.53849475765594E-10" izz="7.00714989568824E-05" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://qtotor/meshes/base_link.STL" />
+            </geometry>
+            <material name="body">
+                <color rgba="0.776470588235294 0.756862745098039 0.737254901960784 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://qtotor/meshes/base_link.STL" />
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="lf_link">
+        <inertial>
+            <origin
+                xyz="-1.3878E-17 0 -6.4813E-05"
+                rpy="0 0 0" />
+            <mass
+                value="0.0011441" />
+            <inertia
+                ixx="8.5243E-07"
+                ixy="1.6387E-07"
+                ixz="5.7397E-22"
+                iyy="4.625E-08"
+                iyz="-2.9604E-21"
+                izz="8.9513E-07" />
+        </inertial>
+        <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://qtotor/meshes/lf_link.STL" />
+            </geometry>
+            <material
+                name="r1">
+                <color
+                rgba="0.28627 0.66275 0.32941 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://qtotor/meshes/lf_link.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="lf_joint"
+        type="continuous">
+        <origin
+        xyz="0.0848528137423857 0.0848528137423857 0.0334999451867051"
+        rpy="0 0 0" />
+        <parent
+        link="base_link" />
+        <child
+        link="lf_link" />
+        <axis
+        xyz="0 0 -1" />
+    </joint>
+    <link name="lb_link">
+        <inertial>
+            <origin
+                xyz="2.7756E-17 0 -6.4813E-05"
+                rpy="0 0 0" />
+            <mass
+                value="0.0011441" />
+            <inertia
+                ixx="4.3576E-08"
+                ixy="1.5714E-07"
+                ixz="5.4865E-22"
+                iyy="8.5511E-07"
+                iyz="-1.4106E-22"
+                izz="8.9513E-07" />
+        </inertial>
+        <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                filename="package://qtotor/meshes/lb_link.STL" />
+            </geometry>
+            <material
+                name="r2">
+                <color
+                rgba="0.28627 0.66275 0.32941 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                filename="package://qtotor/meshes/lb_link.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="lb_joint"
+        type="continuous">
+        <origin
+        xyz="-0.084852813742386 0.0848528137423855 0.0334999451867051"
+        rpy="0 0 0" />
+        <parent
+        link="base_link" />
+        <child
+        link="lb_link" />
+        <axis
+        xyz="0 0 -1" />
+    </joint>
+    <link name="rb_link">
+        <inertial>
+            <origin
+                xyz="-1.3878E-17 0 -6.4813E-05"
+                rpy="0 0 0" />
+            <mass
+                value="0.0011441" />
+            <inertia
+                ixx="8.5243E-07"
+                ixy="1.6387E-07"
+                ixz="5.6584E-22"
+                iyy="4.625E-08"
+                iyz="-2.958E-21"
+                izz="8.9513E-07" />
+        </inertial>
+        <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                filename="package://qtotor/meshes/rb_link.STL" />
+            </geometry>
+            <material
+                name="r3">
+                <color
+                rgba="0.28627 0.66275 0.32941 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                filename="package://qtotor/meshes/rb_link.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="rb_joint"
+        type="continuous">
+        <origin
+        xyz="-0.0848528137423851 -0.0848528137423863 0.0334999451867051"
+        rpy="0 0 0" />
+        <parent
+        link="base_link" />
+        <child
+        link="rb_link" />
+        <axis
+        xyz="0 0 -1" />
+    </joint>
+    <link name="rf_link">
+        <inertial>
+            <origin
+                xyz="-1.3878E-17 0 -6.4813E-05"
+                rpy="0 0 0" />
+            <mass
+                value="0.0011441" />
+            <inertia
+                ixx="4.3576E-08"
+                ixy="1.5714E-07"
+                ixz="5.443E-22"
+                iyy="8.5511E-07"
+                iyz="-1.4546E-22"
+                izz="8.9513E-07" />
+        </inertial>
+        <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                filename="package://qtotor/meshes/rf_link.STL" />
+            </geometry>
+            <material
+                name="r4">
+                <color
+                rgba="0.28627 0.66275 0.32941 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                filename="package://qtotor/meshes/rf_link.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="rf_joint"
+        type="continuous">
+        <origin
+        xyz="0.0848528137423866 -0.0848528137423849 0.0334999451867051"
+        rpy="0 0 0" />
+        <parent
+        link="base_link" />
+        <child
+        link="rf_link" />
+        <axis
+        xyz="0 0 -1" />
+    </joint>
+
+    <!-- 包含传感器宏 -->
+    <xacro:include filename="$(find qtotor)/urdf/xacro/sensors.xacro" />
+    
+    <!-- 包含Gazebo插件 -->
+    <xacro:include filename="$(find qtotor)/urdf/xacro/plugins.xacro" />
+    
+    <!-- 添加传感器 -->
+    <xacro:camera_sensor parent="base_link" xyz="0.05 0 0.03" rpy="0 0 0" />
+    <xacro:imu_sensor parent="base_link" xyz="0 0 0.02" rpy="0 0 0" />
+    <xacro:laser_2d parent="base_link" xyz="0 0 0.05" rpy="0 0 0" />
+    <xacro:Livox_Mid360 parent="base_link" xyz="0 0 0.09" rpy="0 0 0"/>
+
+    <!-- 添加Gazebo插件 -->
+    <xacro:gazebo_plugins />
+  
+</robot>

@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<launch>
+  
+    <!-- 加载机器人描述 -->
+    <param name="robot_description" command="$(find xacro)/xacro '$(find qtotor)/urdf/qtotor.xacro'" />
+    <!-- 发布静态tf -->
+    <node pkg="tf" type="static_transform_publisher" name="map_to_world" 
+        args="0 0 0 0 0 0 map world 100" />
+    <!-- 启动Gazebo -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find qtotor)/worlds/room.world"/>
+        <arg name="paused" value="false"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="gui" value="true"/>
+        <arg name="headless" value="false"/>
+        <arg name="debug" value="false"/>
+    </include>
+  
+    <!-- 在Gazebo中生成机器人 -->
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" 
+        args="-param robot_description -urdf -model qtotor -x 0 -y 0 -z 0.5" />
+  
+    <!-- 发布机器人状态 -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+    <node
+        name="joint_state_publisher_gui"
+        pkg="joint_state_publisher_gui"
+        type="joint_state_publisher_gui" />
+    <!-- 加载控制器配置 -->
+    <rosparam file="$(find qtotor)/config/motor_controllers.yaml" command="load"/>
+  
+    <!-- 启动控制器 -->
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" 
+        args="joint_state_controller 
+              lf_joint_velocity_controller 
+              lb_joint_velocity_controller 
+              rb_joint_velocity_controller 
+              rf_joint_velocity_controller"/>
+    <!-- 电机控制器（使用python3） -->
+    <node name="motor_controller" pkg="qtotor" type="motor_controller.py" output="screen">
+        <env name="PYTHON_EXECUTABLE" value="/usr/bin/python3" />
+    </node>
+    <!-- 启动RViz -->
+    <node name="qtotor" pkg="rviz" type="rviz" args="-d $(find qtotor)/rviz/qtotor.rviz" />
+    <node name="livox" pkg="rviz" type="rviz" args="-d $(find qtotor)/rviz/livox.rviz" />
+  
+</launch>
